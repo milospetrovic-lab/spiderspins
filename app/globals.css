@@ -1,0 +1,610 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --void: #050505;
+  --abyss: #0a0a0a;
+  --cave: #111111;
+  --web: #222222;
+  --web-light: #333333;
+  --venom: #b91c1c;
+  --strike: #ef4444;
+  --silk: #e8e8e8;
+  --silk-dim: #aaaaaa;
+  --shadow: #666666;
+  --fang: #c4a265;
+}
+
+html,
+body {
+  background-color: var(--void);
+  color: var(--silk);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+  }
+}
+
+::selection {
+  background: var(--venom);
+  color: var(--silk);
+}
+
+.hover-target {
+  position: relative;
+}
+
+@keyframes fog-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-2%, 1%, 0); }
+}
+
+/* Nav silk strand — a thin gradient line drifting horizontally */
+.silk-strand {
+  position: absolute;
+  left: -20%;
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(170, 170, 170, 0.35) 45%,
+    rgba(239, 68, 68, 0.5) 55%,
+    rgba(170, 170, 170, 0.35) 65%,
+    transparent 100%
+  );
+  animation: silk-drift 9s linear infinite;
+  filter: blur(0.3px);
+}
+.silk-strand--b {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 200, 200, 0.28) 50%,
+    transparent 100%
+  );
+  height: 1px;
+  animation-duration: 12s;
+}
+.silk-strand--c {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(185, 28, 28, 0.35) 50%,
+    transparent 100%
+  );
+  animation-duration: 14s;
+}
+@keyframes silk-drift {
+  0%   { transform: translateX(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(320%); opacity: 0; }
+}
+
+/* Pulsing anchor dots */
+.anchor-dot {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+  transform: translate(-50%, -50%);
+  animation: anchor-pulse 3.2s ease-in-out infinite;
+}
+@keyframes anchor-pulse {
+  0%, 100% { opacity: 0.25; transform: translate(-50%, -50%) scale(0.7); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.35); }
+}
+
+/* Web glyph slow rotation */
+.nav-web-glyph {
+  transform-origin: 24px 24px;
+  animation: web-spin 60s linear infinite;
+}
+@keyframes web-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Spider descent — thread + body drop from top, hang, retract */
+.spider-descent {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: spider-rappel 8s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
+  transform: translate(-50%, 0);
+}
+.spider-thread {
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(232, 232, 232, 0) 0%,
+    rgba(232, 232, 232, 0.55) 100%
+  );
+  display: block;
+  animation: thread-grow 8s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
+}
+.spider-body {
+  transform-origin: center;
+  animation: body-sway 8s ease-in-out forwards;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+}
+@keyframes spider-rappel {
+  0%   { transform: translate(-50%, -60px); opacity: 0; }
+  10%  { opacity: 1; }
+  35%  { transform: translate(-50%, 28px); opacity: 1; }
+  55%  { transform: translate(-50%, 36px); opacity: 1; }
+  80%  { transform: translate(-50%, 10px); opacity: 1; }
+  100% { transform: translate(-50%, -60px); opacity: 0; }
+}
+@keyframes thread-grow {
+  0%   { height: 0; }
+  30%  { height: 32px; }
+  55%  { height: 40px; }
+  80%  { height: 18px; }
+  100% { height: 0; }
+}
+@keyframes body-sway {
+  0%, 100% { transform: rotate(0deg); }
+  30%      { transform: rotate(-6deg); }
+  50%      { transform: rotate(4deg); }
+  70%      { transform: rotate(-3deg); }
+}
+
+/* Drawer crawl — spider walking across the drawer header */
+.drawer-crawl {
+  animation: crawl-across 14s linear infinite;
+}
+@keyframes crawl-across {
+  0%   { transform: translateX(-20px); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateX(300px); opacity: 0; }
+}
+
+/* Phase 3 — Featured card venom pulse */
+.featured-pulse {
+  animation: featured-venom 3.6s ease-in-out infinite;
+}
+@keyframes featured-venom {
+  0%, 100% {
+    box-shadow:
+      0 0 30px rgba(185, 28, 28, 0.18),
+      inset 0 0 20px rgba(185, 28, 28, 0.06);
+    border-color: rgba(185, 28, 28, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 70px rgba(185, 28, 28, 0.45),
+      inset 0 0 36px rgba(185, 28, 28, 0.14);
+    border-color: rgba(239, 68, 68, 0.95);
+  }
+}
+
+/* Phase 3 — Web path animation on hover (dashed flow) */
+.web-path.active {
+  animation: web-dash-flow 1.5s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.55));
+}
+@keyframes web-dash-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+/* Phase 3 — Play now button reveal on card hover */
+.game-card:hover .play-now {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  /* hide heavy decorative layers entirely */
+  canvas,
+  .silk-strand,
+  .anchor-dot,
+  .nav-web-glyph,
+  .spider-descent,
+  .featured-pulse {
+    animation: none !important;
+  }
+}
+
+/* Phase 4 — Vault silk converging lines */
+@keyframes vault-draw {
+  0%   { stroke-dashoffset: 220; opacity: 0; }
+  30%  { opacity: 0.6; }
+  100% { stroke-dashoffset: 0; opacity: 0.9; }
+}
+
+/* Phase 4 — Deposit slider styling */
+.deposit-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: linear-gradient(to right, #333 0%, #222 100%);
+  border-radius: 2px;
+  outline: none;
+}
+.deposit-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid #050505;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.55);
+  cursor: pointer;
+}
+.deposit-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid #050505;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.55);
+  cursor: pointer;
+}
+
+/* ----------  Preloader  ---------- */
+@keyframes preload-draw {
+  0%   { stroke-dashoffset: var(--start, 300); opacity: 0; }
+  15%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.85; }
+}
+@keyframes preload-dot {
+  0%   { opacity: 0; transform: scale(0.2); transform-box: fill-box; transform-origin: center; }
+  60%  { opacity: 1; transform: scale(1.6); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.preload-water {
+  animation: preload-shimmer 4s ease-in-out infinite alternate;
+}
+@keyframes preload-shimmer {
+  0%   { transform: translate3d(0,0,0) scale(1); filter: blur(40px); }
+  100% { transform: translate3d(4%, -3%, 0) scale(1.1); filter: blur(55px); }
+}
+.pre-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.pre-corner.tl { top: 16px; left: 16px; border-top: 1px solid #ef4444; border-left: 1px solid #ef4444; }
+.pre-corner.tr { top: 16px; right: 16px; border-top: 1px solid #ef4444; border-right: 1px solid #ef4444; }
+.pre-corner.bl { bottom: 16px; left: 16px; border-bottom: 1px solid #ef4444; border-left: 1px solid #ef4444; }
+.pre-corner.br { bottom: 16px; right: 16px; border-bottom: 1px solid #ef4444; border-right: 1px solid #ef4444; }
+
+/* ----------  Spider rain on hero  ---------- */
+.rain-spider {
+  width: 0;
+  will-change: transform;
+}
+.rain-thread {
+  width: 1px;
+  height: 0;
+  background: linear-gradient(180deg, rgba(232,232,232,0) 0%, rgba(232,232,232,0.55) 100%);
+}
+.rain-body {
+  transform-origin: top center;
+  will-change: transform;
+}
+@keyframes spider-fall {
+  0%   { transform: translate3d(var(--drift), -15vh, 0); opacity: 0; }
+  8%   { opacity: calc(var(--depth, 1) * 1); }
+  45%  { transform: translate3d(var(--drift), var(--dangle, 45vh), 0); opacity: calc(var(--depth, 1) * 1); }
+  60%  { transform: translate3d(var(--drift), var(--dangle, 45vh), 0); }
+  88%  { transform: translate3d(var(--drift), -18vh, 0); opacity: calc(var(--depth, 1) * 1); }
+  100% { transform: translate3d(var(--drift), -18vh, 0); opacity: 0; }
+}
+@keyframes spider-thread {
+  0%   { height: 0; }
+  45%  { height: var(--dangle, 45vh); }
+  60%  { height: calc(var(--dangle, 45vh) + 10px); }
+  88%  { height: 0; }
+  100% { height: 0; }
+}
+@keyframes spider-sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50%      { transform: rotate(6deg); }
+}
+
+/* ----------  Sci-fi HUD overlay  ---------- */
+.hud-corner {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  opacity: 0.45;
+  border-color: rgba(239,68,68,0.9);
+}
+.hud-corner.tl { top: 14px; left: 14px; border-top: 1px solid; border-left: 1px solid; }
+.hud-corner.tr { top: 14px; right: 14px; border-top: 1px solid; border-right: 1px solid; }
+.hud-corner.bl { bottom: 14px; left: 14px; border-bottom: 1px solid; border-left: 1px solid; }
+.hud-corner.br { bottom: 14px; right: 14px; border-bottom: 1px solid; border-right: 1px solid; }
+.hud-scanline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(239,68,68,0.5) 50%, transparent 100%);
+  animation: hud-scan 7s linear infinite;
+  opacity: 0.35;
+  pointer-events: none;
+}
+@keyframes hud-scan {
+  0%   { top: -2px; }
+  100% { top: 100vh; }
+}
+.hud-scan {
+  display: inline-block;
+  width: 22px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(239,68,68,0.8), transparent);
+  animation: hud-scan-mini 2.2s linear infinite;
+}
+@keyframes hud-scan-mini {
+  0%   { opacity: 0.2; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+/* ----------  Animated spider logo  ---------- */
+.animated-logo .logo-web {
+  transform-origin: center;
+  animation: logo-wave 7s ease-in-out infinite;
+}
+@keyframes logo-wave {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50%      { transform: rotate(3deg) scale(1.04); }
+}
+.animated-logo .logo-eye {
+  animation: logo-eye-pulse 2.6s ease-in-out infinite;
+}
+@keyframes logo-eye-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+/* ----------  Scroll spider (hanging, follows scroll)  ---------- */
+.scroll-spider {
+  position: fixed;
+  top: 0;
+  right: 6vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 45;
+  pointer-events: none;
+  transform: translate3d(var(--sx, 0), var(--sy, -10vh), 0);
+  transition: transform 80ms linear;
+}
+.scroll-spider-thread {
+  width: 1px;
+  height: var(--tl, 0);
+  background: linear-gradient(180deg, rgba(232,232,232,0.02) 0%, rgba(232,232,232,0.5) 100%);
+}
+.scroll-spider-body {
+  display: inline-block;
+  animation: scroll-spider-sway 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 6px rgba(239,68,68,0.35));
+}
+@keyframes scroll-spider-sway {
+  0%   { transform: rotate(-4deg); }
+  100% { transform: rotate(4deg); }
+}
+@media (max-width: 768px) {
+  .scroll-spider { display: none; }
+}
+
+/* ----------  Interactive web grid (hero)  ---------- */
+.interactive-web-grid {
+  color: rgba(180, 180, 180, 0.3);
+}
+.web-cell {
+  position: absolute;
+  transform: translate3d(0, 0, 0);
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  margin-top: -7px;
+  transition: color 0.25s ease-out, filter 0.25s ease-out;
+  will-change: transform;
+  color: rgba(180, 180, 180, 0.35);
+}
+.web-cell.is-near {
+  color: #ef4444;
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.55));
+}
+.web-cell.is-exploded {
+  color: #b91c1c;
+}
+
+/* ----------  Burger morph  ---------- */
+.burger-btn { overflow: visible; }
+.burger-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 18px;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+.burger-lines > span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: #e8e8e8;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.2s linear, background 0.3s;
+  transform-origin: center;
+}
+.burger-lines > span:nth-child(3) { background: #ef4444; }
+.burger-btn:hover .burger-lines > span:nth-child(3) {
+  transform: scaleX(1.15);
+}
+.burger-btn.is-open .burger-lines > span:nth-child(1) {
+  transform: translateY(5.5px) rotate(45deg);
+  background: #ef4444;
+}
+.burger-btn.is-open .burger-lines > span:nth-child(2) {
+  opacity: 0;
+}
+.burger-btn.is-open .burger-lines > span:nth-child(3) {
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+.burger-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  animation: burger-pulse 3s ease-in-out infinite;
+}
+@keyframes burger-pulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.05); }
+}
+.nav-scan-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(239,68,68,0.8), transparent);
+  animation: hud-scan-mini 2.2s linear infinite;
+}
+
+/* ----------  Game card HUD corners + scan band  ---------- */
+.gc-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border-color: rgba(239, 68, 68, 0.45);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+.game-card:hover .gc-corner { opacity: 1; }
+.gc-corner.tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
+.gc-corner.tr { top: 10px; right: 10px; border-top: 1px solid; border-right: 1px solid; }
+.gc-corner.bl { bottom: 10px; left: 10px; border-bottom: 1px solid; border-left: 1px solid; }
+.gc-corner.br { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
+.game-card:hover .gc-play { opacity: 1; transform: translateY(0); }
+.scan-band {
+  animation: scan-band 6s ease-in-out infinite;
+  transform-origin: center center;
+}
+@keyframes scan-band {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(240px); opacity: 0.9; }
+}
+
+/* ----------  Hero intro surface separator (under nav)  ---------- */
+.hero-hud-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 48px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* ----------  Hero bottom drip (silk threads)  ---------- */
+.drip-thread {
+  transform-origin: top center;
+  animation: drip-sway 5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes drip-sway {
+  0%   { transform: rotate(-2.5deg); }
+  100% { transform: rotate(2.5deg); }
+}
+.drip-dot {
+  position: absolute;
+  left: -2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.7);
+  animation: drip-pulse 3s ease-in-out infinite alternate;
+}
+@keyframes drip-pulse {
+  0%   { opacity: 0.55; transform: scale(0.85); }
+  100% { opacity: 1;    transform: scale(1.15); }
+}
+
+/* ----------  Paid flash (cashier success)  ---------- */
+.paid-flash {
+  animation: paidFlashIn 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    paidFlashOut 0.5s ease-in 1.9s both;
+}
+@keyframes paidFlashIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -16px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+@keyframes paidFlashOut {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.96);
+  }
+}
+
+/* ----------  Deposit popup  ---------- */
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes popupEnter {
+  0%   { opacity: 0; transform: translateY(14px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ----------  Phase 5 — Spinnerets horizontal scroll (hide scrollbar, keep function)  ---------- */
+.spinnerets-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #222 transparent;
+}
+.spinnerets-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.spinnerets-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.spinnerets-scroll::-webkit-scrollbar-thumb {
+  background: #222;
+  border-radius: 3px;
+}
+.spinnerets-scroll::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}

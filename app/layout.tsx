@@ -14,6 +14,7 @@ import ParticleField3D from '@/components/ParticleField3D';
 import HUDOverlay from '@/components/HUDOverlay';
 import ScrollSpider from '@/components/ScrollSpider';
 import ConfettiCannon from '@/components/ConfettiCannon';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -83,6 +84,7 @@ export default function RootLayout({
         <Navbar />
         <main className="relative z-10">{children}</main>
         <ConfettiCannon scope="viewport" />
+        <SpeedInsights />
       </body>
     </html>
   );

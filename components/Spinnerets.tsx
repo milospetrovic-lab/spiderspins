@@ -111,9 +111,10 @@ export default function Spinnerets() {
                 key={p.title}
                 className="spin-reveal snap-start shrink-0 w-[320px] md:w-[380px] rounded-xl border border-web/70 bg-cave/70 p-6 hover:-translate-y-1 transition-transform duration-400 hover-target relative overflow-hidden group"
               >
-                {/* grain texture */}
+                {/* grain texture — hidden on mobile (mix-blend + SVG turbulence
+                    were the main cause of laggy horizontal swipe on phones) */}
                 <div
-                  className="pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay"
+                  className="pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay hidden md:block"
                   style={{
                     backgroundImage:
                       'url("data:image/svg+xml;utf8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.85%27 numOctaves=%272%27/%3E%3CfeColorMatrix values=%270 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E")',

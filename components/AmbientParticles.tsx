@@ -17,17 +17,23 @@ export default function AmbientParticles() {
       setEnabled(false);
       return;
     }
+    // Touch devices skip ambient particles entirely — Three.js Points + canvas
+    // texture was a measurable scroll-jank source on phones.
+    try {
+      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+        setEnabled(false);
+        return;
+      }
+    } catch {}
     let cancelled = false;
     (async () => {
       try {
         const res = await getGPUTier();
         if (!cancelled) {
-          // Disable entirely for tier 0 (unsupported / low-power) to save battery
           if (res.tier === 0) setEnabled(false);
           else setGpuTier(res.tier);
         }
       } catch {
-        // detection failed — assume mid
         if (!cancelled) setGpuTier(2);
       }
     })();

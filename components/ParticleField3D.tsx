@@ -19,6 +19,12 @@ export default function ParticleField3D() {
         setEnabled(false);
         return;
       }
+      // Touch devices skip the warp particle field entirely — 130+ animated
+      // DOM nodes was a measurable scroll-lag source on mobile.
+      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+        setEnabled(false);
+        return;
+      }
     } catch {}
     let cancelled = false;
     (async () => {

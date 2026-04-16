@@ -397,50 +397,60 @@ export default function BenefitsSlider() {
           </div>
         </div>
 
-        {/* RIGHT — dice stage */}
-        <div ref={stageRef} className="relative min-h-[520px] md:min-h-[640px]">
-          {/* stat pill — top-left (House edge) */}
-          <div className="absolute top-2 md:top-6 left-2 md:left-6 z-[5] rounded-lg border border-strike/40 bg-cave/80 backdrop-blur-md px-3 py-2 shadow-strike-glow">
-            <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">
-              House edge
+        {/* RIGHT — dice stage.
+            Mobile: tight 3:2 canvas + inline pill row underneath (no empty floor).
+            Desktop: tall stage with floating absolute pills (unchanged). */}
+        <div ref={stageRef} className="relative md:min-h-[640px]">
+          {/* Canvas — gets natural mobile height via aspect; absolute on desktop */}
+          <div className="relative aspect-[3/2] md:aspect-auto md:absolute md:inset-0">
+            {/* Desktop-only floating pills */}
+            <div className="hidden md:block absolute top-6 left-6 z-[5] rounded-lg border border-strike/40 bg-cave/80 backdrop-blur-md px-3 py-2 shadow-strike-glow">
+              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">House edge</div>
+              <div className="font-display font-bold text-strike text-lg leading-none">0.5%</div>
             </div>
-            <div className="font-display font-bold text-strike text-lg leading-none">0.5%</div>
-          </div>
-
-          {/* stat pill — bottom-right (dynamic per-slide stat) */}
-          <div className="absolute bottom-8 md:bottom-12 right-2 md:right-6 z-[5] rounded-lg border border-venom/40 bg-cave/80 backdrop-blur-md px-3 py-2">
-            <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">
-              {current.stat.label}
+            <div className="hidden md:block absolute bottom-12 right-6 z-[5] rounded-lg border border-venom/40 bg-cave/80 backdrop-blur-md px-3 py-2">
+              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">{current.stat.label}</div>
+              <div className="font-display font-bold text-strike text-lg leading-none">{current.stat.value}</div>
             </div>
-            <div className="font-display font-bold text-strike text-lg leading-none">
-              {current.stat.value}
+            <div className="hidden md:block pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 z-[5] font-mono text-[10px] uppercase tracking-[0.3em] text-shadow">
+              Click dice to advance →
             </div>
-          </div>
 
-          {/* click hint */}
-          <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 z-[5] font-mono text-[10px] uppercase tracking-[0.3em] text-shadow">
-            Click dice to advance →
-          </div>
-
-          {/* Canvas — transparent stage, click advances */}
-          <button
-            onClick={next}
-            aria-label="Next benefit"
-            className="hover-target absolute inset-0 overflow-visible cursor-pointer bg-transparent border-0 outline-none"
-          >
-            <Canvas
-              shadows
-              dpr={[1, 2]}
-              camera={{ position: [0, 3.4, 9.5], fov: 42 }}
-              gl={{ antialias: true, alpha: true }}
-              frameloop={inView ? 'always' : 'never'}
-              style={{ width: '100%', height: '100%', background: 'transparent' }}
+            {/* Canvas */}
+            <button
+              onClick={next}
+              aria-label="Next benefit"
+              className="hover-target absolute inset-0 overflow-visible cursor-pointer bg-transparent border-0 outline-none"
             >
-              <Suspense fallback={null}>
-                <Scene face={face} />
-              </Suspense>
-            </Canvas>
-          </button>
+              <Canvas
+                shadows
+                dpr={[1, 2]}
+                camera={{ position: [0, 3.4, 9.5], fov: 42 }}
+                gl={{ antialias: true, alpha: true }}
+                frameloop={inView ? 'always' : 'never'}
+                style={{ width: '100%', height: '100%', background: 'transparent' }}
+              >
+                <Suspense fallback={null}>
+                  <Scene face={face} />
+                </Suspense>
+              </Canvas>
+            </button>
+          </div>
+
+          {/* Mobile-only inline pill row + hint — fills the empty floor */}
+          <div className="md:hidden mt-4 grid grid-cols-2 gap-3">
+            <div className="rounded-lg border border-strike/40 bg-cave/80 px-3 py-2.5">
+              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">House edge</div>
+              <div className="font-display font-bold text-strike text-lg leading-none">0.5%</div>
+            </div>
+            <div className="rounded-lg border border-venom/40 bg-cave/80 px-3 py-2.5">
+              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">{current.stat.label}</div>
+              <div className="font-display font-bold text-strike text-lg leading-none">{current.stat.value}</div>
+            </div>
+          </div>
+          <div className="md:hidden mt-3 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-shadow">
+            Tap dice to advance →
+          </div>
         </div>
       </div>
     </section>

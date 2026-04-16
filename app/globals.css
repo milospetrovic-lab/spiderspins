@@ -537,6 +537,28 @@ body {
   animation-play-state: paused !important;
 }
 
+/* Mobile perf — kill expensive compositing layers + heavy textures.
+   backdrop-filter:blur and mix-blend-mode trigger GPU work that crushes
+   scroll FPS on phones. Drop them everywhere below the md breakpoint. */
+@media (max-width: 767px) {
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* Spinnerets cards have an inline SVG noise texture — too heavy on mobile swipe */
+  .spinnerets-scroll article > div[aria-hidden="true"][style*="fractalNoise"],
+  .spinnerets-scroll article > div[style*="fractalNoise"] {
+    display: none !important;
+  }
+  /* Drop nav scan lines + nav-web-glyph rotation on mobile */
+  .nav-scan-line,
+  .nav-web-glyph {
+    display: none !important;
+  }
+}
+
 /* ----------  Hero bottom drip (silk threads)  ---------- */
 .drip-thread {
   transform-origin: top center;

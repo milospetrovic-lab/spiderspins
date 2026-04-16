@@ -2,12 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['three'],
-  // v2 is the experimental branch — skip strict type-check + lint during Vercel
-  // build so deploys can ship even while polish is ongoing. Types still checked
-  // locally via `tsc --noEmit` and in the editor.
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // ESLint stays relaxed (lots of preview-quality components, not worth blocking
+  // a deploy on a missing alt prop). TypeScript is now strict — production
+  // build fails on real type errors so we catch regressions.
   eslint: {
     ignoreDuringBuilds: true,
   },

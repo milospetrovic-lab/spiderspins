@@ -40,8 +40,13 @@ export default function WarpTunnel({
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
 
-    // Gentle S-curve — keeps depth without swinging too hard
+    // Gentle S-curve — keeps depth without swinging too hard.
+    // Three.js r169 made Curve's constructor protected, so we declare an
+    // explicit public one that just forwards to super.
     class WarpCurve extends THREE.Curve<THREE.Vector3> {
+      constructor() {
+        super();
+      }
       getPoint(t: number, target = new THREE.Vector3()) {
         const z = -t * 260;
         const x = Math.sin(t * Math.PI * 1.4) * 3.2;

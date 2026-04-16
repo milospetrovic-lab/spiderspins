@@ -77,6 +77,11 @@ export default function ScrollSpider() {
   }, [chips.length]);
 
   const explode = (ev: React.MouseEvent | React.TouchEvent) => {
+    // Touch devices: keep spider visible but skip chip-physics explosion.
+    // The chip animation was the main mobile lag near the spider.
+    try {
+      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+    } catch {}
     if (exploding) return;
     const body = bodyRef.current;
     if (!body) return;

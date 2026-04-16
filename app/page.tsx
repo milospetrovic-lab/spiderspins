@@ -10,6 +10,7 @@ import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import SpiderRain from '@/components/SpiderRain';
 import InteractiveWebGrid from '@/components/InteractiveWebGrid';
+import WebParticleNet from '@/components/WebParticleNet';
 import PaymentCard from '@/components/PaymentCard';
 import HeroHexFrame from '@/components/HeroHexFrame';
 import HeroScrollTransition from '@/components/HeroScrollTransition';
@@ -44,7 +45,12 @@ export default function HomePage() {
         <div data-intro="hex" aria-hidden className="absolute inset-0 z-[2] pointer-events-none" style={{ transformOrigin: '50% 50%' }}>
           <HeroHexFrame />
         </div>
+        {/* Layer 4 — interactive surface.
+            Desktop: WebParticleNet (constellation that links + threads to cursor in red).
+            Touch: InteractiveWebGrid (radial dots that scatter on click).
+            Each component internally bails on the wrong device, so both can mount. */}
         <div data-intro="grid" aria-hidden className="absolute inset-0 z-[4]">
+          <WebParticleNet />
           <InteractiveWebGrid />
         </div>
         <div data-intro="rain" aria-hidden className="absolute inset-0 z-[5] pointer-events-none">
@@ -94,7 +100,7 @@ export default function HomePage() {
               Learn the math
             </a>
           </div>
-          <p className="mt-10 font-mono text-[10px] uppercase tracking-[0.3em] text-shadow">
+          <p className="hidden md:block mt-10 font-mono text-[10px] uppercase tracking-[0.3em] text-shadow">
             Drag anywhere on the page to pull silk — release for confetti
           </p>
         </div>

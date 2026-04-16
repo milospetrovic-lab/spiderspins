@@ -27,6 +27,12 @@ export default function InteractiveWebGrid() {
     const wrap = wrapRef.current;
     if (!wrap) return;
 
+    // Mount only on touch devices. Desktop uses WebParticleNet (the connecting
+    // constellation effect) instead — same z-layer, different interaction model.
+    try {
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    } catch {}
+
     const cells: Cell[] = [];
     const rings = 4;
     const spokes = 14;

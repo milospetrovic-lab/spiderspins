@@ -1,7 +1,7 @@
 import SpiderMark from './SpiderMark';
 
-// Anchor hrefs land on existing sections; placeholders route to /404 so every
-// link is actionable while we stub real pages.
+// All links resolve to real pages or in-page anchors. Promotions, Support, and
+// Refer-a-Friend remain stubs (route to /404) until their dedicated pages exist.
 const navGroups = [
   {
     title: 'Casino',
@@ -15,19 +15,19 @@ const navGroups = [
   {
     title: 'Help',
     links: [
-      { label: 'Responsible Gaming', href: '/404' },
-      { label: 'Terms', href: '/404' },
-      { label: 'Privacy', href: '/404' },
+      { label: 'Responsible Gaming', href: '/responsible-gambling' },
+      { label: 'Terms', href: '/terms' },
+      { label: 'Privacy', href: '/privacy' },
       { label: 'Support', href: '/404' },
     ],
   },
   {
     title: 'The Lair',
     links: [
-      { label: 'About', href: '/404' },
+      { label: 'About', href: '/menagerie' },
       { label: 'VIP', href: '/#vip' },
       { label: 'Banking', href: '/#cashier' },
-      { label: 'Refer a Friend', href: '/404' },
+      { label: 'Refer a Friend', href: '/#refer' },
     ],
   },
 ];
@@ -85,16 +85,19 @@ export default function Footer() {
               Your web. Your rules. A patient casino for players who read the math.
             </p>
 
-            <div className="mt-6 flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-strike/50 text-strike font-mono font-bold text-xs">
+            <a
+              href="/responsible-gambling"
+              className="hover-target mt-6 flex items-center gap-3 group"
+            >
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-strike/50 group-hover:border-strike text-strike font-mono font-bold text-xs transition-colors">
                 18+
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-silk-dim leading-snug">
+              <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-silk-dim group-hover:text-silk transition-colors leading-snug">
                 Play responsibly.
                 <br />
                 The web is patient — so are the wins.
               </span>
-            </div>
+            </a>
           </div>
 
           {/* nav groups */}

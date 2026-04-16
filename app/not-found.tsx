@@ -17,8 +17,7 @@ export default function NotFound() {
         A silk thread <span className="text-strike">snapped</span>.
       </h1>
       <p className="mt-6 max-w-xl text-center font-display font-light text-silk-dim text-base md:text-lg">
-        Patch the web before the timer runs out. Tap every red anchor — every
-        hit weaves a new thread. Complete the pattern and the web rewards you.
+        Whatever you were looking for isn&apos;t here. Tap the broken anchors if you feel like it — or just head home. No stakes either way.
       </p>
 
       <WeaveTheWeb />

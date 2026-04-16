@@ -67,9 +67,46 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Structured data — Organization + WebSite schema. Gives search engines +
+  // AI crawlers a clear picture of what SpiderSpins is, plus the site-search
+  // URL template for the sitelinks search box in Google results.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://spiderspins-v2.vercel.app/#organization',
+        name: 'SpiderSpins',
+        url: 'https://spiderspins-v2.vercel.app/',
+        logo: 'https://spiderspins-v2.vercel.app/icon.svg',
+        description:
+          'Patient-player online casino. Transparent math, 500+ games, 5-tier VIP lifecycle.',
+        slogan: 'Your web. Your rules.',
+        foundingDate: '2026',
+        sameAs: [
+          'https://twitter.com/spiderspins',
+          'https://t.me/spiderspins',
+          'https://discord.gg/spiderspins',
+        ],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://spiderspins-v2.vercel.app/#website',
+        url: 'https://spiderspins-v2.vercel.app/',
+        name: 'SpiderSpins',
+        publisher: { '@id': 'https://spiderspins-v2.vercel.app/#organization' },
+        inLanguage: 'en-US',
+      },
+    ],
+  };
+
   return (
     <html lang="en" className={`${outfit.variable} ${spaceMono.variable}`}>
       <body className="bg-void text-silk font-display antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Preloader />
         <ScrollProgress />
         <WebBackground />

@@ -319,21 +319,21 @@ export default function WeaveTheWeb() {
               The silk holds.
             </div>
             <p className="text-silk-dim text-sm max-w-xs mb-4">
-              +50 silk threads credited to your Colony profile (demo).
+              Nice hands. Let&apos;s get you back where you were going.
             </p>
             <div className="flex items-center gap-3">
-              <button
-                onClick={reset}
-                className="hover-target inline-flex items-center px-5 py-2.5 border border-strike/60 bg-strike/10 text-strike font-display uppercase tracking-[0.2em] text-xs rounded-md"
-              >
-                Play again
-              </button>
               <a
                 href="/"
-                className="hover-target inline-flex items-center px-5 py-2.5 border border-web hover:border-web-light text-silk-dim hover:text-silk font-display uppercase tracking-[0.2em] text-xs rounded-md transition-colors"
+                className="hover-target inline-flex items-center px-5 py-2.5 border border-strike/60 bg-strike/10 text-strike font-display uppercase tracking-[0.2em] text-xs rounded-md"
               >
                 Back to web
               </a>
+              <button
+                onClick={reset}
+                className="hover-target inline-flex items-center px-5 py-2.5 border border-web hover:border-web-light text-silk-dim hover:text-silk font-display uppercase tracking-[0.2em] text-xs rounded-md transition-colors"
+              >
+                Play again
+              </button>
             </div>
           </div>
         )}
@@ -361,7 +361,7 @@ export default function WeaveTheWeb() {
       </div>
 
       <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-shadow max-w-md text-center">
-        Demo — no real stakes. One full web per visit counts toward your Colony reward streak.
+        404 · this page isn&apos;t part of the web. No stakes, no rewards — just a moment to breathe while you find your way back.
       </p>
     </div>
   );

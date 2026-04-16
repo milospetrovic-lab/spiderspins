@@ -105,6 +105,18 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* Phase 2 scroll indicator — sits above the silk drip, fades out as
+            the user scrolls. Pure CSS, no listeners. */}
+        <div
+          aria-hidden
+          className="scroll-cue pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[148px] md:bottom-[168px] z-[9] flex flex-col items-center gap-3"
+        >
+          <span className="font-mono text-[9px] uppercase tracking-[0.36em] text-silk-dim">
+            Scroll to explore
+          </span>
+          <span className="scroll-cue-line" />
+        </div>
+
         <div
           aria-hidden
           className="pointer-events-none absolute left-0 right-0 bottom-0 h-40 z-[7]"

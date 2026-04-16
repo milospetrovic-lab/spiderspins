@@ -1,10 +1,17 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+// Web Vault — one-shot count-up triggered when the section enters the
+// viewport. Previously used GSAP ScrollTrigger `scrub: 0.6` which had two
+// bugs: (a) the 0.6s easing lag made the number visibly keep climbing after
+// the user stopped scrolling on desktop; (b) ScrollTrigger's pixel math can
+// get stale on mobile if fonts/images load after mount, so the trigger
+// bands landed in the wrong place and a mobile swipe through the section
+// wouldn't update the counter. IO + rAF one-shot sidesteps both.
+
+const TARGET = 2400;
+const DURATION_MS = 2800;
 
 const rewardThresholds = [
   { at: 0.15, label: 'Freespins', color: 'venom' },
@@ -14,49 +21,83 @@ const rewardThresholds = [
   { at: 0.92, label: 'Silk Bounty', color: 'fang' },
 ];
 
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
 export default function WebVault() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const counterRef = useRef<HTMLDivElement | null>(null);
+  const startedRef = useRef(false);
+  const rafRef = useRef<number | null>(null);
   const [unlockedCount, setUnlockedCount] = useState(0);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+    const el = sectionRef.current;
+    if (!el) return;
 
-    const ctx = gsap.context(() => {
-      const obj = { val: 0 };
-      gsap.to(obj, {
-        val: 2400,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 75%',
-          end: 'bottom 40%',
-          scrub: 0.6,
-          onUpdate: (self) => {
-            if (counterRef.current) {
-              counterRef.current.textContent =
-                '$' + Math.round(obj.val).toLocaleString();
-            }
-            const prog = self.progress;
-            let count = 0;
-            for (const t of rewardThresholds) if (prog >= t.at) count++;
-            setUnlockedCount(count);
-          },
-        },
-      });
+    const reduced = (() => {
+      try {
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch {
+        return false;
+      }
+    })();
 
-      gsap.from(section.querySelectorAll('.vault-reveal'), {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: section, start: 'top 78%' },
-      });
-    }, section);
+    const run = () => {
+      if (startedRef.current) return;
+      startedRef.current = true;
 
-    return () => ctx.revert();
+      if (reduced) {
+        if (counterRef.current) {
+          counterRef.current.textContent = '$' + TARGET.toLocaleString();
+        }
+        setUnlockedCount(rewardThresholds.length);
+        return;
+      }
+
+      const start = performance.now();
+      const step = () => {
+        const t = Math.min(1, (performance.now() - start) / DURATION_MS);
+        const v = Math.round(TARGET * easeOutCubic(t));
+        if (counterRef.current) {
+          counterRef.current.textContent = '$' + v.toLocaleString();
+        }
+        let unlocked = 0;
+        for (const r of rewardThresholds) if (t >= r.at) unlocked++;
+        setUnlockedCount(unlocked);
+        if (t < 1) {
+          rafRef.current = requestAnimationFrame(step);
+        } else {
+          // Final snap — land exactly on the target, stop updating forever
+          if (counterRef.current) {
+            counterRef.current.textContent = '$' + TARGET.toLocaleString();
+          }
+          setUnlockedCount(rewardThresholds.length);
+          rafRef.current = null;
+        }
+      };
+      rafRef.current = requestAnimationFrame(step);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            run();
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.25, rootMargin: '0px 0px -10% 0px' }
+    );
+    io.observe(el);
+
+    return () => {
+      io.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
@@ -66,19 +107,17 @@ export default function WebVault() {
       className="relative z-10 py-24 md:py-36 px-6"
     >
       <div className="max-w-5xl mx-auto text-center">
-        <p className="vault-reveal font-mono text-silk-dim text-[11px] uppercase tracking-[0.42em] mb-4">
+        <p className="font-mono text-silk-dim text-[11px] uppercase tracking-[0.42em] mb-4">
           The Web Vault
         </p>
-        <h2 className="vault-reveal font-display font-black text-silk leading-[0.95] text-[clamp(2rem,6vw,4.5rem)]">
+        <h2 className="font-display font-black text-silk leading-[0.95] text-[clamp(2rem,6vw,4.5rem)]">
           The web <span className="text-strike">remembers</span>.
         </h2>
-        <p className="vault-reveal mt-5 max-w-xl mx-auto font-display font-light text-silk-dim text-base md:text-lg">
-          Every spin thickens the silk. Scroll to watch the vault fill — rewards unlock as you go.
+        <p className="mt-5 max-w-xl mx-auto font-display font-light text-silk-dim text-base md:text-lg">
+          Every spin thickens the silk. Each threshold unlocks another thread — all of it adds up.
         </p>
 
-        {/* Vault circle with converging silk */}
-        <div className="relative mx-auto mt-14 w-[min(440px,90vw)] aspect-square vault-reveal">
-          {/* outer ring */}
+        <div className="relative mx-auto mt-14 w-[min(440px,90vw)] aspect-square">
           <svg
             viewBox="0 0 400 400"
             className="absolute inset-0 w-full h-full"
@@ -90,7 +129,6 @@ export default function WebVault() {
               <circle cx="200" cy="200" r="100" />
               <circle cx="200" cy="200" r="60" />
             </g>
-            {/* converging silk threads */}
             <g className="vault-silk" stroke="#444" strokeWidth="0.8" fill="none">
               {Array.from({ length: 18 }).map((_, i) => {
                 const angle = (i / 18) * Math.PI * 2;
@@ -114,7 +152,6 @@ export default function WebVault() {
             </g>
           </svg>
 
-          {/* center counter */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-silk-dim mb-2">
               Vault value
@@ -131,12 +168,10 @@ export default function WebVault() {
             </div>
           </div>
 
-          {/* center eye dot */}
           <span className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-strike shadow-[0_0_22px_#ef4444] opacity-70" />
         </div>
 
-        {/* reward pills */}
-        <div className="mt-12 flex flex-wrap justify-center gap-3 vault-reveal">
+        <div className="mt-12 flex flex-wrap justify-center gap-3">
           {rewardThresholds.map((r, i) => {
             const unlocked = i < unlockedCount;
             const colorClass =
@@ -160,7 +195,8 @@ export default function WebVault() {
                   unlocked ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-60',
                 ].join(' ')}
               >
-                {unlocked ? '● ' : '○ '}{r.label}
+                {unlocked ? '● ' : '○ '}
+                {r.label}
               </span>
             );
           })}

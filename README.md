@@ -4,7 +4,7 @@ Brand #10 — patient-strategist casino.
 
 Tagline: Your web. Your rules.
 
-Production: https://spiderspins-v2.vercel.app
+Production: https://spiderspins.vercel.app
 
 See /presentation/ for the marketing pitch deck.
 

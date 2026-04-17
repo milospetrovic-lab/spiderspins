@@ -76,10 +76,10 @@ export default function RootLayout({
     '@graph': [
       {
         '@type': 'Organization',
-        '@id': 'https://spiderspins-v2.vercel.app/#organization',
+        '@id': 'https://spiderspins.vercel.app/#organization',
         name: 'SpiderSpins',
-        url: 'https://spiderspins-v2.vercel.app/',
-        logo: 'https://spiderspins-v2.vercel.app/icon.svg',
+        url: 'https://spiderspins.vercel.app/',
+        logo: 'https://spiderspins.vercel.app/icon.svg',
         description:
           'Patient-player online casino. Transparent math, 500+ games, 5-tier VIP lifecycle.',
         slogan: 'Your web. Your rules.',
@@ -92,10 +92,10 @@ export default function RootLayout({
       },
       {
         '@type': 'WebSite',
-        '@id': 'https://spiderspins-v2.vercel.app/#website',
-        url: 'https://spiderspins-v2.vercel.app/',
+        '@id': 'https://spiderspins.vercel.app/#website',
+        url: 'https://spiderspins.vercel.app/',
         name: 'SpiderSpins',
-        publisher: { '@id': 'https://spiderspins-v2.vercel.app/#organization' },
+        publisher: { '@id': 'https://spiderspins.vercel.app/#organization' },
         inLanguage: 'en-US',
       },
     ],

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE = 'https://spiderspins-v2.vercel.app';
+const BASE = 'https://spiderspins.vercel.app';
 
 export default function robots(): MetadataRoute.Robots {
   return {

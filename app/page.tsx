@@ -95,10 +95,10 @@ export default function HomePage() {
               Enter the Web
             </a>
             <a
-              href="#benefits"
+              href="#terms"
               className="hover-target hero-skip-intro inline-flex items-center px-8 py-4 border border-web-light/60 text-silk-dim hover:text-silk uppercase tracking-[0.15em] text-sm font-display font-medium transition-colors"
             >
-              Learn the math
+              See the math
             </a>
           </div>
           <p className="hidden md:block mt-10 font-mono text-[10px] uppercase tracking-[0.3em] text-shadow">

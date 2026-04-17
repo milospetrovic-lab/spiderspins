@@ -52,8 +52,8 @@ export const metadata: Metadata = {
       'Transparent math. Patient wins. 500+ games, 8K+ Colony.',
   },
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
   },
 };
 

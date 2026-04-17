@@ -69,53 +69,91 @@ const SPECIES: Species[] = [
 const SCALE = 160;
 
 function shapeHatchling(N: number): Float32Array {
-  // Wolf spider eight eyes — 2-2-2-2 arrangement.
-  // 8 circular clusters, weighted toward the two huge anterior-median eyes.
+  // Wolf spider — compact body, 8 glowing eyes on cephalothorax (signature),
+  // 8 short legs splayed low (stalker pose, not a web-weaver).
   const arr = new Float32Array(N * 3);
-  const clusters = [
-    // cluster center x, y, z (scaled), radius (scaled), particle weight
-    { cx: -0.15, cy:  0.35, r: 0.06, w: 180 / 3000 },  // row 1: small posterior
-    { cx:  0.15, cy:  0.35, r: 0.06, w: 180 / 3000 },
-    { cx: -0.35, cy:  0.12, r: 0.09, w: 320 / 3000 },  // row 2: mid wide
-    { cx:  0.35, cy:  0.12, r: 0.09, w: 320 / 3000 },
-    { cx: -0.18, cy: -0.08, r: 0.08, w: 280 / 3000 },  // row 3: mid close
-    { cx:  0.18, cy: -0.08, r: 0.08, w: 280 / 3000 },
-    { cx: -0.22, cy: -0.32, r: 0.14, w: 720 / 3000 },  // row 4: HUGE anterior
-    { cx:  0.22, cy: -0.32, r: 0.14, w: 720 / 3000 },
-  ];
-  // Normalize weights so counts sum to N
-  const totW = clusters.reduce((s, c) => s + c.w, 0);
-  const counts = clusters.map((c) => Math.round((c.w / totW) * N));
-  // Adjust for rounding
-  let total = counts.reduce((a, b) => a + b, 0);
-  while (total < N) { counts[7]++; total++; }
-  while (total > N) { counts[0]--; total--; }
+  // Proportions: 12% ceph, 15% abd, 18% eight eyes, 55% eight legs
+  const nCeph = Math.floor(N * 0.12);
+  const nAbd = Math.floor(N * 0.15);
+  const nEyes = Math.floor(N * 0.18);
+  const nLegs = N - nCeph - nAbd - nEyes;
+  const perLeg = Math.floor(nLegs / 8);
+  const perEye = Math.floor(nEyes / 8);
 
   let idx = 0;
-  for (let k = 0; k < clusters.length; k++) {
-    const c = clusters[k];
-    const cxS = c.cx * SCALE * 1.3;
-    const cyS = c.cy * SCALE * 1.3;
-    const rS = c.r * SCALE * 1.3;
-    for (let i = 0; i < counts[k]; i++) {
-      // 70% polar random disc, 30% gaussian-tight at center (pupil glow)
-      const isPupil = Math.random() < 0.3;
-      const ang = Math.random() * Math.PI * 2;
-      let r;
-      if (isPupil) {
-        // gaussian-ish: sum of uniform + uniform gives triangular distribution near 0
-        r = (Math.random() + Math.random()) * 0.25 * rS;
-      } else {
-        // uniform disc: sqrt for even density
-        r = Math.sqrt(Math.random()) * rS;
-      }
-      arr[idx * 3] = cxS + Math.cos(ang) * r;
-      arr[idx * 3 + 1] = cyS + Math.sin(ang) * r;
-      // Slight forward offset on largest eyes so they catch light forward
-      const depth = k >= 6 ? 8 : 0;
-      arr[idx * 3 + 2] = depth + (Math.random() - 0.5) * 4;
+  // Cephalothorax — compact front disc
+  for (let i = 0; i < nCeph; i++) {
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.acos(2 * Math.random() - 1);
+    arr[idx * 3] = Math.sin(v) * Math.cos(u) * SCALE * 0.14;
+    arr[idx * 3 + 1] = Math.sin(v) * Math.sin(u) * SCALE * 0.11 + SCALE * 0.14;
+    arr[idx * 3 + 2] = Math.cos(v) * SCALE * 0.11;
+    idx++;
+  }
+  // Abdomen — small rear
+  for (let i = 0; i < nAbd; i++) {
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.acos(2 * Math.random() - 1);
+    arr[idx * 3] = Math.sin(v) * Math.cos(u) * SCALE * 0.16;
+    arr[idx * 3 + 1] = Math.sin(v) * Math.sin(u) * SCALE * 0.18 - SCALE * 0.10;
+    arr[idx * 3 + 2] = Math.cos(v) * SCALE * 0.14;
+    idx++;
+  }
+  // 8 eyes: 2-2-2-2 wolf-spider arrangement on the cephalothorax front
+  const eyes = [
+    { x: -0.05, y: 0.28, r: 0.025 }, // row 1 PM — small
+    { x:  0.05, y: 0.28, r: 0.025 },
+    { x: -0.12, y: 0.22, r: 0.040 }, // row 2 PL — wider
+    { x:  0.12, y: 0.22, r: 0.040 },
+    { x: -0.07, y: 0.17, r: 0.030 }, // row 3 AL — close
+    { x:  0.07, y: 0.17, r: 0.030 },
+    { x: -0.09, y: 0.10, r: 0.055 }, // row 4 AM — HUGE
+    { x:  0.09, y: 0.10, r: 0.055 },
+  ];
+  for (let e = 0; e < 8; e++) {
+    for (let i = 0; i < perEye; i++) {
+      const a = Math.random() * Math.PI * 2;
+      // 60% disc, 40% gaussian tight for pupil glow (row-4 eyes read brightest)
+      const tight = Math.random() < (e >= 6 ? 0.55 : 0.35);
+      const r = tight
+        ? (Math.random() + Math.random()) * 0.25 * eyes[e].r * SCALE
+        : Math.sqrt(Math.random()) * eyes[e].r * SCALE;
+      arr[idx * 3] = eyes[e].x * SCALE + Math.cos(a) * r;
+      arr[idx * 3 + 1] = eyes[e].y * SCALE + Math.sin(a) * r;
+      arr[idx * 3 + 2] = (e >= 6 ? 6 : 2) + (Math.random() - 0.5) * 3;
       idx++;
     }
+  }
+  // 8 short legs — wolf spiders have compact, robust legs splayed low for running
+  const legDirs: [number, number][] = [
+    [-1, 0.5], [-1, 0.15], [-1, -0.2], [-1, -0.5],
+    [1, 0.5], [1, 0.15], [1, -0.2], [1, -0.5],
+  ];
+  for (let leg = 0; leg < 8; leg++) {
+    const [sx, ay] = legDirs[leg];
+    const bx = sx * SCALE * 0.09;
+    const by = ay * SCALE * 0.05 + SCALE * 0.02;
+    // Knee — close to body, slightly out-and-down (low stance)
+    const kx = sx * SCALE * 0.38;
+    const ky = by - SCALE * 0.04;
+    // Tip — shorter reach than widow (wolf legs are thicker, shorter)
+    const tx = sx * SCALE * 0.62;
+    const ty = ay * SCALE * 0.30 - SCALE * 0.05;
+    for (let i = 0; i < perLeg; i++) {
+      const t = i / Math.max(perLeg - 1, 1);
+      const x = (1 - t) * (1 - t) * bx + 2 * (1 - t) * t * kx + t * t * tx;
+      const y = (1 - t) * (1 - t) * by + 2 * (1 - t) * t * ky + t * t * ty;
+      arr[idx * 3] = x;
+      arr[idx * 3 + 1] = y;
+      arr[idx * 3 + 2] = (Math.random() - 0.5) * 8;
+      idx++;
+    }
+  }
+  while (idx < N) {
+    arr[idx * 3] = (Math.random() - 0.5) * SCALE * 1.6;
+    arr[idx * 3 + 1] = (Math.random() - 0.5) * SCALE * 1.0;
+    arr[idx * 3 + 2] = 0;
+    idx++;
   }
   return arr;
 }
@@ -187,29 +225,88 @@ function shapeHunter(N: number): Float32Array {
 }
 
 function shapeWeaver(N: number): Float32Array {
-  // Funnel-web: descending cone narrowing to a vanishing point.
-  // Mouth at top (wide), throat at bottom (tight). Particles distributed
-  // along concentric rings down the cone wall, with more density near the mouth.
+  // Funnel-web spider — ambush architect. Visible fangs at front,
+  // long legs angled forward for the strike, silk thread trailing back
+  // into a small funnel entrance behind the body.
   const arr = new Float32Array(N * 3);
-  const mouthR = SCALE * 0.85;   // top of the funnel
-  const throatR = SCALE * 0.05;  // bottom vanishing point
-  const height = SCALE * 1.4;
-  const yTop = height * 0.45;
-  const yBottom = -height * 0.55;
+  // 14% ceph, 22% abd, 6% fangs, 8% silk trail, 50% eight legs
+  const nCeph = Math.floor(N * 0.14);
+  const nAbd = Math.floor(N * 0.22);
+  const nFangs = Math.floor(N * 0.06);
+  const nTrail = Math.floor(N * 0.08);
+  const nLegs = N - nCeph - nAbd - nFangs - nTrail;
+  const perLeg = Math.floor(nLegs / 8);
 
-  for (let i = 0; i < N; i++) {
-    // Biased toward the mouth: t=0 is throat, t=1 is mouth
-    // sqrt(random) biases toward 1 (mouth) for denser rim
-    const t = Math.pow(Math.random(), 0.55);
-    const y = yBottom + t * (yTop - yBottom);
-    // Radius scales with t (throat -> mouth). Slight inward curl for the cone.
-    const r = throatR + t * (mouthR - throatR);
-    const ang = Math.random() * Math.PI * 2;
-    // Tiny radial jitter for organic silk feel
-    const jr = (Math.random() - 0.5) * 0.02 * SCALE;
-    arr[i * 3] = Math.cos(ang) * (r + jr);
-    arr[i * 3 + 1] = y;
-    arr[i * 3 + 2] = Math.sin(ang) * (r + jr);
+  let idx = 0;
+  // Cephalothorax — slightly forward-leaning
+  for (let i = 0; i < nCeph; i++) {
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.acos(2 * Math.random() - 1);
+    arr[idx * 3] = Math.sin(v) * Math.cos(u) * SCALE * 0.14;
+    arr[idx * 3 + 1] = Math.sin(v) * Math.sin(u) * SCALE * 0.11 + SCALE * 0.10;
+    arr[idx * 3 + 2] = Math.cos(v) * SCALE * 0.13;
+    idx++;
+  }
+  // Abdomen — robust, darker rear
+  for (let i = 0; i < nAbd; i++) {
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.acos(2 * Math.random() - 1);
+    arr[idx * 3] = Math.sin(v) * Math.cos(u) * SCALE * 0.22;
+    arr[idx * 3 + 1] = Math.sin(v) * Math.sin(u) * SCALE * 0.24 - SCALE * 0.16;
+    arr[idx * 3 + 2] = Math.cos(v) * SCALE * 0.20;
+    idx++;
+  }
+  // Fangs — two downward spikes at front (signature funnel-web look)
+  for (let i = 0; i < nFangs; i++) {
+    const side = i < nFangs / 2 ? -1 : 1;
+    const t = Math.random();
+    // Spike curves down and slightly inward
+    const x = side * SCALE * 0.06 * (1 - t * 0.5);
+    const y = SCALE * 0.22 - t * SCALE * 0.10;
+    arr[idx * 3] = x + (Math.random() - 0.5) * 3;
+    arr[idx * 3 + 1] = y + (Math.random() - 0.5) * 2;
+    arr[idx * 3 + 2] = SCALE * 0.10 + Math.random() * 4;
+    idx++;
+  }
+  // Silk trail — particles trailing back from spinnerets into a suggested funnel
+  for (let i = 0; i < nTrail; i++) {
+    const t = Math.random();
+    const spread = t * SCALE * 0.08;
+    arr[idx * 3] = (Math.random() - 0.5) * spread;
+    arr[idx * 3 + 1] = -SCALE * 0.40 - t * SCALE * 0.25;
+    arr[idx * 3 + 2] = (Math.random() - 0.5) * spread;
+    idx++;
+  }
+  // 8 legs — longer than wolf, angled forward like an ambush crouch
+  const legDirs: [number, number][] = [
+    [-1, 0.9], [-1, 0.45], [-1, -0.05], [-1, -0.55],
+    [1, 0.9], [1, 0.45], [1, -0.05], [1, -0.55],
+  ];
+  for (let leg = 0; leg < 8; leg++) {
+    const [sx, ay] = legDirs[leg];
+    // Front legs (highest ay) reach further and higher — ambush pose
+    const frontBias = ay > 0.3 ? 1.1 : 1.0;
+    const bx = sx * SCALE * 0.10;
+    const by = ay * SCALE * 0.06 + SCALE * 0.03;
+    const kx = sx * SCALE * 0.50 * frontBias;
+    const ky = by + SCALE * 0.18;
+    const tx = sx * SCALE * 0.92 * frontBias;
+    const ty = ay * SCALE * 0.42;
+    for (let i = 0; i < perLeg; i++) {
+      const t = i / Math.max(perLeg - 1, 1);
+      const x = (1 - t) * (1 - t) * bx + 2 * (1 - t) * t * kx + t * t * tx;
+      const y = (1 - t) * (1 - t) * by + 2 * (1 - t) * t * ky + t * t * ty;
+      arr[idx * 3] = x;
+      arr[idx * 3 + 1] = y;
+      arr[idx * 3 + 2] = (Math.random() - 0.5) * 10;
+      idx++;
+    }
+  }
+  while (idx < N) {
+    arr[idx * 3] = (Math.random() - 0.5) * SCALE * 1.8;
+    arr[idx * 3 + 1] = (Math.random() - 0.5) * SCALE * 1.0;
+    arr[idx * 3 + 2] = 0;
+    idx++;
   }
   return arr;
 }
@@ -292,90 +389,78 @@ function shapeWidow(N: number): Float32Array {
 }
 
 function shapeEmpress(N: number): Float32Array {
-  // Crown of 8 bezier legs: base band (rim) + 8 curved legs rising +
-  // 4 tall peak tips + 4 short valley bridges. Alt tall/short creates the crown silhouette.
+  // Goliath Birdeater — the largest spider. Largest body proportions,
+  // very long bristled legs, and gold crown-band markings on the abdomen.
   const arr = new Float32Array(N * 3);
-  const CW = SCALE * 1.3;          // crown width
-  const CH = SCALE * 0.9;           // crown height
-  const BASE_Y = -SCALE * 0.3;
-
-  // Spec proportions: 600 base + 1600 legs + 400 peaks + 400 valleys = 3000
-  const nBase = Math.round(N * 0.2);
-  const nLeg = Math.floor((N * 0.533) / 8);
-  const legsTotal = nLeg * 8;
-  const nPeak = Math.floor((N * 0.133) / 4);
-  const peaksTotal = nPeak * 4;
-  const nValley = Math.floor((N * 0.133) / 4);
+  // 16% ceph, 28% abd, 8% gold crown bands, 48% eight long legs
+  const nCeph = Math.floor(N * 0.16);
+  const nAbd = Math.floor(N * 0.28);
+  const nCrown = Math.floor(N * 0.08);
+  const nLegs = N - nCeph - nAbd - nCrown;
+  const perLeg = Math.floor(nLegs / 8);
 
   let idx = 0;
-
-  // Base band (thin horizontal rim)
-  for (let i = 0; i < nBase; i++) {
-    const t = Math.random();
-    const x = -CW / 2 + t * CW;
-    const y = BASE_Y + (Math.random() - 0.5) * (SCALE * 0.06);
-    const z = (Math.random() - 0.5) * SCALE * 0.08;
-    arr[idx * 3] = x;
-    arr[idx * 3 + 1] = y;
-    arr[idx * 3 + 2] = z;
+  // Cephalothorax — bigger than widow
+  for (let i = 0; i < nCeph; i++) {
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.acos(2 * Math.random() - 1);
+    arr[idx * 3] = Math.sin(v) * Math.cos(u) * SCALE * 0.18;
+    arr[idx * 3 + 1] = Math.sin(v) * Math.sin(u) * SCALE * 0.14 + SCALE * 0.12;
+    arr[idx * 3 + 2] = Math.cos(v) * SCALE * 0.16;
     idx++;
   }
-
-  // 8 legs rising via bezier. Legs at even indices = TALL, odd = SHORT.
+  // Abdomen — massive, regal proportions
+  for (let i = 0; i < nAbd; i++) {
+    const u = Math.random() * Math.PI * 2;
+    const v = Math.acos(2 * Math.random() - 1);
+    arr[idx * 3] = Math.sin(v) * Math.cos(u) * SCALE * 0.30;
+    arr[idx * 3 + 1] = Math.sin(v) * Math.sin(u) * SCALE * 0.32 - SCALE * 0.18;
+    arr[idx * 3 + 2] = Math.cos(v) * SCALE * 0.28;
+    idx++;
+  }
+  // Gold crown bands — 3 horizontal rings wrapping the abdomen
+  // These become the "Empress" signature: no hourglass, but regal bands.
+  const bandYs = [-SCALE * 0.05, -SCALE * 0.18, -SCALE * 0.32];
+  for (let i = 0; i < nCrown; i++) {
+    const ring = i % 3;
+    const y = bandYs[ring] + (Math.random() - 0.5) * 4;
+    const ang = Math.random() * Math.PI * 2;
+    // Match the abdomen's ellipsoidal radius at this y
+    const rBand = SCALE * 0.30 * Math.sqrt(Math.max(0,
+      1 - Math.pow((y + SCALE * 0.18) / (SCALE * 0.32), 2)));
+    arr[idx * 3] = Math.cos(ang) * (rBand + 2);
+    arr[idx * 3 + 1] = y;
+    arr[idx * 3 + 2] = Math.sin(ang) * (rBand + 2);
+    idx++;
+  }
+  // 8 very long elegant legs — extended regal stance
+  const legDirs: [number, number][] = [
+    [-1, 0.7], [-1, 0.25], [-1, -0.2], [-1, -0.65],
+    [1, 0.7], [1, 0.25], [1, -0.2], [1, -0.65],
+  ];
   for (let leg = 0; leg < 8; leg++) {
-    const isTall = leg % 2 === 0;
-    const xStart = -CW / 2 + (leg / 7) * CW;
-    const yTop = BASE_Y + (isTall ? CH : CH * 0.55);
-    // Slight outward arc via control point
-    const ctrlX = xStart + (leg < 4 ? -SCALE * 0.05 : SCALE * 0.05);
-    const ctrlY = BASE_Y + CH * 0.5;
-    for (let i = 0; i < nLeg; i++) {
-      const t = i / Math.max(nLeg - 1, 1);
-      const omt = 1 - t;
-      const x = omt * omt * xStart + 2 * omt * t * ctrlX + t * t * xStart;
-      const y = omt * omt * BASE_Y + 2 * omt * t * ctrlY + t * t * yTop;
-      const jx = (Math.random() - 0.5) * SCALE * 0.008;
-      const jy = (Math.random() - 0.5) * SCALE * 0.008;
-      arr[idx * 3] = x + jx;
-      arr[idx * 3 + 1] = y + jy;
-      arr[idx * 3 + 2] = (Math.random() - 0.5) * SCALE * 0.05;
+    const [sx, ay] = legDirs[leg];
+    const bx = sx * SCALE * 0.14;
+    const by = ay * SCALE * 0.06 + SCALE * 0.04;
+    // Knee further out + higher for a lifted, graceful silhouette
+    const kx = sx * SCALE * 0.62;
+    const ky = by + SCALE * 0.22;
+    // Tips reach further out than widow (biggest spider)
+    const tx = sx * SCALE * 1.10;
+    const ty = ay * SCALE * 0.55;
+    for (let i = 0; i < perLeg; i++) {
+      const t = i / Math.max(perLeg - 1, 1);
+      const x = (1 - t) * (1 - t) * bx + 2 * (1 - t) * t * kx + t * t * tx;
+      const y = (1 - t) * (1 - t) * by + 2 * (1 - t) * t * ky + t * t * ty;
+      arr[idx * 3] = x;
+      arr[idx * 3 + 1] = y;
+      arr[idx * 3 + 2] = (Math.random() - 0.5) * 12;
       idx++;
     }
   }
-
-  // Tall peak tips — bright clusters at every other leg's top
-  const tallIdxs = [0, 2, 4, 6];
-  for (const peakLeg of tallIdxs) {
-    const x = -CW / 2 + (peakLeg / 7) * CW;
-    const y = BASE_Y + CH;
-    for (let i = 0; i < nPeak; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const r = Math.random() * SCALE * 0.04;
-      arr[idx * 3] = x + Math.cos(a) * r;
-      arr[idx * 3 + 1] = y + Math.sin(a) * r * 0.7;
-      arr[idx * 3 + 2] = (Math.random() - 0.5) * SCALE * 0.05;
-      idx++;
-    }
-  }
-
-  // Short valley bridges — 4 between the tall peaks
-  for (let vi = 0; vi < 4; vi++) {
-    const x = -CW / 2 + ((vi * 2 + 1) / 7) * CW;
-    const y = BASE_Y + CH * 0.55;
-    for (let i = 0; i < nValley; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const r = Math.random() * SCALE * 0.03;
-      arr[idx * 3] = x + Math.cos(a) * r;
-      arr[idx * 3 + 1] = y + Math.sin(a) * r * 0.7;
-      arr[idx * 3 + 2] = (Math.random() - 0.5) * SCALE * 0.04;
-      idx++;
-    }
-  }
-
-  // Pad any remainder into the rim
   while (idx < N) {
-    arr[idx * 3] = (Math.random() - 0.5) * CW;
-    arr[idx * 3 + 1] = BASE_Y + (Math.random() - 0.5) * SCALE * 0.05;
+    arr[idx * 3] = (Math.random() - 0.5) * SCALE * 2.2;
+    arr[idx * 3 + 1] = (Math.random() - 0.5) * SCALE * 1.2;
     arr[idx * 3 + 2] = 0;
     idx++;
   }

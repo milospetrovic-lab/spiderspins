@@ -15,6 +15,7 @@ import HUDOverlay from '@/components/HUDOverlay';
 import ScrollSpider from '@/components/ScrollSpider';
 import ConfettiCannon from '@/components/ConfettiCannon';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -122,6 +123,7 @@ export default function RootLayout({
         <main className="relative z-10">{children}</main>
         <ConfettiCannon scope="viewport" />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

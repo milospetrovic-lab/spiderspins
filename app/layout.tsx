@@ -35,12 +35,12 @@ export const metadata: Metadata = {
   title: 'SpiderSpins — Your web. Your rules.',
   description:
     'Every thread leads somewhere. Every spin tightens the web. SpiderSpins — patient, precise, always in control.',
-  metadataBase: new URL('https://spiderspins.com'),
+  metadataBase: new URL('https://spiderspins.vercel.app'),
   openGraph: {
     title: 'SpiderSpins — Your web. Your rules.',
     description:
       'Transparent math, 500+ games, 8K+ Colony. The patient casino for players who read the web.',
-    url: 'https://spiderspins.com',
+    url: 'https://spiderspins.vercel.app',
     siteName: 'SpiderSpins',
     locale: 'en_US',
     type: 'website',

@@ -283,7 +283,7 @@ function Card({
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                'linear-gradient(180deg, rgba(5,5,5,0) 40%, rgba(5,5,5,0.72) 85%, rgba(5,5,5,0.92) 100%)',
+                'linear-gradient(180deg, rgba(5,5,5,0.6) 0%, rgba(5,5,5,0.2) 22%, rgba(5,5,5,0) 45%, rgba(5,5,5,0.72) 85%, rgba(5,5,5,0.92) 100%)',
             }}
           />
         </>
@@ -300,11 +300,11 @@ function Card({
       {/* content */}
       <div className="relative h-full p-5 md:p-6 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-silk-dim">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-void/70 backdrop-blur-sm border border-web/60 font-mono text-[10px] uppercase tracking-[0.28em] text-silk">
             {game.tag}
           </span>
           {isFeatured && (
-            <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-strike flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-void/70 backdrop-blur-sm border border-strike/60 font-mono text-[10px] uppercase tracking-[0.28em] text-strike">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-strike shadow-[0_0_8px_#ef4444] animate-pulse" />
               Live
             </span>
@@ -320,7 +320,7 @@ function Card({
           >
             {game.name}
           </h3>
-          <div className="mt-3 flex items-center gap-3 flex-wrap">
+          <div className="gc-meta mt-3 flex items-center gap-3 flex-wrap transition-all duration-300">
             <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-web/70 bg-void/60 backdrop-blur-sm">
               <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-shadow">
                 Vol
@@ -402,12 +402,6 @@ export default function GameCards() {
               Generated art. Real math. Hover a card to see the details — the silk stays out of the way.
             </p>
           </div>
-          <a
-            href="#all-games"
-            className="gc-reveal hover-target font-mono text-[11px] uppercase tracking-[0.28em] text-silk-dim hover:text-strike transition-colors"
-          >
-            All games →
-          </a>
         </div>
 
         <div className="mb-5 md:mb-6">

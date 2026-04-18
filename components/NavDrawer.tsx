@@ -52,18 +52,14 @@ const sections: Section[] = [
       { label: 'Table Games', href: '/#games', icon: IconTable },
       { label: 'Video Poker', href: '/#games', icon: IconPoker },
       { label: 'Jackpots', href: '/#games', icon: IconJackpot },
-      { label: 'Progressive', href: '/#games', icon: IconProg },
-      { label: 'Tournaments', href: '/404', icon: IconTournaments },
     ],
   },
   {
     title: 'Account',
     items: [
-      { label: 'Promotions', href: '/404', icon: IconPromo },
       { label: 'Rewards', href: '/#boutique', icon: IconRewards },
       { label: 'VIP Lounge', href: '/#vip', icon: IconVIP },
       { label: 'Banking', href: '/#cashier', icon: IconBank },
-      { label: 'Refer a Friend', href: '/#refer', icon: IconRefer },
     ],
   },
   {

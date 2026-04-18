@@ -1,14 +1,11 @@
 import SpiderMark from './SpiderMark';
 
-// All links resolve to real pages or in-page anchors. Promotions, Support, and
-// Refer-a-Friend remain stubs (route to /404) until their dedicated pages exist.
+// Every link points to a real page or in-page anchor. Stubs removed.
 const navGroups = [
   {
     title: 'Casino',
     links: [
       { label: 'Games', href: '/#games' },
-      { label: 'Promotions', href: '/404' },
-      { label: 'Spinnerets', href: '/#spinnerets' },
       { label: 'Colony', href: '/#colony' },
     ],
   },
@@ -18,7 +15,6 @@ const navGroups = [
       { label: 'Responsible Gaming', href: '/responsible-gambling' },
       { label: 'Terms', href: '/terms' },
       { label: 'Privacy', href: '/privacy' },
-      { label: 'Support', href: '/404' },
     ],
   },
   {
@@ -27,7 +23,6 @@ const navGroups = [
       { label: 'About', href: '/menagerie' },
       { label: 'VIP', href: '/#vip' },
       { label: 'Banking', href: '/#cashier' },
-      { label: 'Refer a Friend', href: '/#refer' },
     ],
   },
 ];

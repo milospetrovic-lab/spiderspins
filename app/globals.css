@@ -509,6 +509,9 @@ body {
 .gc-corner.bl { bottom: 10px; left: 10px; border-bottom: 1px solid; border-left: 1px solid; }
 .gc-corner.br { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
 .game-card:hover .gc-play { opacity: 1; transform: translateY(0); }
+/* Hide the Vol pill on hover so the Try-free / Play-now buttons aren't
+   crashed into "Vol · Extreme" on the featured card. */
+.game-card:hover .gc-meta { opacity: 0; transform: translateY(8px); pointer-events: none; }
 .scan-band {
   animation: scan-band 6s ease-in-out infinite;
   transform-origin: center center;

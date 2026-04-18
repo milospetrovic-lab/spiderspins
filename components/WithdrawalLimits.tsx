@@ -132,7 +132,7 @@ export default function WithdrawalLimits() {
         </div>
 
         <p className="wl-reveal mt-6 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-shadow">
-          All limits subject to KYC verification · higher tiers unlock via VIP ladder
+          All limits subject to KYC verification
         </p>
       </div>
     </section>

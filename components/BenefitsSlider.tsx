@@ -395,11 +395,7 @@ export default function BenefitsSlider() {
         <div ref={stageRef} className="relative md:min-h-[640px]">
           {/* Canvas — gets natural mobile height via aspect; absolute on desktop */}
           <div className="relative aspect-[3/2] md:aspect-auto md:absolute md:inset-0">
-            {/* Desktop-only floating pills */}
-            <div className="hidden md:block absolute top-6 left-6 z-[5] rounded-lg border border-strike/40 bg-cave/80 backdrop-blur-md px-3 py-2 shadow-strike-glow">
-              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">House edge</div>
-              <div className="font-display font-bold text-strike text-lg leading-none">0.5%</div>
-            </div>
+            {/* Desktop-only floating stat pill (per-card). House-edge pill removed. */}
             <div className="hidden md:block absolute bottom-12 right-6 z-[5] rounded-lg border border-venom/40 bg-cave/80 backdrop-blur-md px-3 py-2">
               <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">{current.stat.label}</div>
               <div className="font-display font-bold text-strike text-lg leading-none">{current.stat.value}</div>
@@ -429,13 +425,9 @@ export default function BenefitsSlider() {
             </button>
           </div>
 
-          {/* Mobile-only inline pill row + hint — fills the empty floor */}
-          <div className="md:hidden mt-4 grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-strike/40 bg-cave/80 px-3 py-2.5">
-              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">House edge</div>
-              <div className="font-display font-bold text-strike text-lg leading-none">0.5%</div>
-            </div>
-            <div className="rounded-lg border border-venom/40 bg-cave/80 px-3 py-2.5">
+          {/* Mobile-only inline stat pill — fills the empty floor */}
+          <div className="md:hidden mt-4 flex justify-center">
+            <div className="rounded-lg border border-venom/40 bg-cave/80 px-4 py-2.5 min-w-[180px] text-center">
               <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-silk-dim">{current.stat.label}</div>
               <div className="font-display font-bold text-strike text-lg leading-none">{current.stat.value}</div>
             </div>

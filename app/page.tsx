@@ -4,7 +4,6 @@ import WebVault from '@/components/WebVault';
 import VIPTiers from '@/components/VIPTiers';
 import StatsCounters from '@/components/StatsCounters';
 import Colony from '@/components/Colony';
-import Spinnerets from '@/components/Spinnerets';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import SpiderRain from '@/components/SpiderRain';
@@ -142,7 +141,6 @@ export default function HomePage() {
       <PaymentCard />
       {/* A4 · Withdrawal limits */}
       <WithdrawalLimits />
-      <Spinnerets />
       <Colony />
       {/* B2 · Social share rewards */}
       <SocialShare />

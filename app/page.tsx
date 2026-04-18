@@ -87,7 +87,7 @@ export default function HomePage() {
           </p>
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pointer-events-auto">
             <a
-              href="/#play-crypto"
+              href="/#vip"
               className="hover-target hero-skip-intro inline-flex items-center px-8 py-4 bg-venom text-silk uppercase tracking-[0.15em] text-sm font-display font-medium hover:bg-strike transition-colors shadow-strike-glow"
             >
               Enter the Web
